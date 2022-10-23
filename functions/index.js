@@ -50,8 +50,10 @@ app.post('/webhook(/pix)?', async(req, res) => {
         await axios.post('https://us-central1-readeasydice.cloudfunctions.net/api', {
             pix
         })
+
+        return console.log('sucess')
     } catch (error) {
-        
+        console.log(error)
     }
     res.send(200)
 })
