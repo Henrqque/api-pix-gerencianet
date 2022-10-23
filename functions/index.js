@@ -14,7 +14,6 @@ const reqGNAlready = GNRequest({
     clientSecret: process.env.GN_CLIENT_SECRET
 });
 
-
 app.post('/', async(req, res) => {
     const reqGN = await reqGNAlready;
     const { fullname, expire, amount, cpf } = req.body;
