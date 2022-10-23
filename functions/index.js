@@ -44,16 +44,7 @@ app.post('/', async(req, res) => {
 })
 
 app.post('/webhook(/pix)?', async(req, res) => {
-    console.log(req.body);
-    const { pix } = req.body;
-    try {
-        pix.forEach(async e => {
-            await admin.firestore().collection('payments').add(e);
-        })
-    } catch (error) {
-        
-    }
-    res.send(200)
+    res.send(req.body);
 })
 
 app.listen(8000, () => console.log('server running'))
