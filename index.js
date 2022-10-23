@@ -16,7 +16,7 @@ const reqGNAlready = GNRequest({
 
 app.post('/', async(req, res) => {
     const reqGN = await reqGNAlready;
-    const { fullname, expire, amount, cpf } = req.body;
+    const { fullname, expire, amount, cpf, user } = req.body;
     const dataCob = {
         calendario: {
             expiracao: expire
@@ -35,7 +35,15 @@ app.post('/', async(req, res) => {
     const cobResponse = await reqGN.post('v2/cob', dataCob);
     const qrcodeResponse = await reqGN.get(`/v2/loc/${cobResponse.data.loc.id}/qrcode`, dataCob);
 
-    res.send(qrcodeResponse.data)
+    const data = {
+        user: user,
+        total: amount,
+        qrcode_image: qrcodeResponse.data.qrcode,
+        status: 'pending',
+        txid: cobResponse.data.txid
+    }
+
+    res.send(data)
 })
 
 app.post('/webhook(/pix)?', async(req, res) => {
