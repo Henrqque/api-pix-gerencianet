@@ -1,12 +1,10 @@
 if(process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
-
 const axios = require('axios')
 const express = require('express');
 const GNRequest = require('./src/apis/gerencianet');
 const bodyParser = require('body-parser');
-
 
 const app = express();
 app.use(bodyParser.json());
