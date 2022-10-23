@@ -56,6 +56,6 @@ app.post('/webhook(/pix)?', async(req, res) => {
     res.send(200)
 })
 
-//app.listen(8000, () => console.log('server running'))
+app.listen(8000, () => console.log('server running'))
 
-exports.api = functions.https.onRequest(app);
+//exports.api = functions.https.onRequest(app);
