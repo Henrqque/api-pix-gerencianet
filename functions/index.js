@@ -4,6 +4,7 @@ if(process.env.NODE_ENV !== 'production') {
 
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const axios = require('axios')
 const express = require('express');
 const GNRequest = require('./src/apis/gerencianet');
 const bodyParser = require('body-parser');
