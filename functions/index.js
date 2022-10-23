@@ -6,7 +6,10 @@ const express = require('express');
 const GNRequest = require('./src/apis/gerencianet');
 
 const app = express();
-const reqGNAlready = GNRequest();
+const reqGNAlready = GNRequest({
+    clientID: process.env.GN_CLIENT_ID,
+    clientSecret: process.env.GN_CLIENT_SECRET
+});
 
 
 app.get('/', async(req, res) => {
