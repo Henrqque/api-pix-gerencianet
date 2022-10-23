@@ -9,12 +9,13 @@ const GNRequest = require('./src/apis/gerencianet');
 const app = express();
 app.use(bodyParser.json());
 
+const reqGNAlready = GNRequest({
+    clientID: process.env.GN_CLIENT_ID,
+    clientSecret: process.env.GN_CLIENT_SECRET
+});
 
 app.post('/', async(req, res) => {
-    const reqGN = await GNRequest({
-        clientID: process.env.GN_CLIENT_ID,
-        clientSecret: process.env.GN_CLIENT_SECRET
-    });
+    const reqGN = await reqGNAlready;
     const { fullname, expire, amount, cpf } = req.body;
     const dataCob = {
         calendario: {
