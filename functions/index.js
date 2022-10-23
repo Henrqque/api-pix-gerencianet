@@ -4,8 +4,11 @@ if(process.env.NODE_ENV !== 'production') {
 
 const express = require('express');
 const GNRequest = require('./src/apis/gerencianet');
+const bodyParser = require('body-parser');
 
 const app = express();
+app.use(bodyParser.json());
+
 const reqGNAlready = GNRequest({
     clientID: process.env.GN_CLIENT_ID,
     clientSecret: process.env.GN_CLIENT_SECRET
@@ -29,6 +32,11 @@ app.get('/', async(req, res) => {
     const qrcodeResponse = await reqGN.get(`/v2/loc/${cobResponse.data.loc.id}/qrcode`, dataCob);
 
     res.send(qrcodeResponse.data)
+})
+
+app.get('/webhook(/pix)?', (req, res) => {
+    console.log(req.body);
+    res.send(200)
 })
 
 app.listen(8000, () => console.log('server running'))
