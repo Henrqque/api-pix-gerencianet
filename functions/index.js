@@ -2,9 +2,13 @@ if(process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 const express = require('express');
 const GNRequest = require('./src/apis/gerencianet');
 const bodyParser = require('body-parser');
+
+admin.initializeApp();
 
 const app = express();
 app.use(bodyParser.json());
@@ -15,14 +19,19 @@ const reqGNAlready = GNRequest({
 });
 
 
-app.get('/', async(req, res) => {
+app.post('/', async(req, res) => {
+    const { fullname, expire, amount, cpf } = req.body;
     const reqGN = await reqGNAlready;
     const dataCob = {
         calendario: {
-            expiracao: 3600
+            expiracao: expire
+        },
+        devedor: {
+            cpf: cpf,
+            nome: fullname
         },
         valor: {
-            original: "0.10"
+            original: amount.toFixed(2)
         },
         chave: "2ce7dcd7-5eb3-4d20-b13d-908868a40659",
         solicitacaoPagador: "Cobrança dos serviços prestado"
@@ -34,9 +43,19 @@ app.get('/', async(req, res) => {
     res.send(qrcodeResponse.data)
 })
 
-app.post('/webhook(/pix)?', (req, res) => {
+app.post('/webhook(/pix)?', async(req, res) => {
     console.log(req.body);
+    const { pix } = req.body;
+    try {
+        pix.forEach(async e => {
+            await admin.firestore().collection('payments').add(e);
+        })
+    } catch (error) {
+        
+    }
     res.send(200)
 })
 
-app.listen(8000, () => console.log('server running'))
+//app.listen(8000, () => console.log('server running'))
+
+exports.api = functions.https.onRequest(app);
