@@ -44,9 +44,29 @@ app.post('/', async(req, res) => {
 })
 
 app.post('/webhook(/pix)?', async(req, res) => {
-    res.send(req.body);
+    console.log(req.body);
+    const { pix } = req.body;
+    try {
+        await axios.post('https://us-central1-readeasydice.cloudfunctions.net/api', {
+            pix
+        })
+    } catch (error) {
+        
+    }
+    res.send(200)
 })
 
 app.listen(8000, () => console.log('server running'))
 
-//exports.api = functions.https.onRequest(app);
+/* exports.api = functions.https.onRequest(async(req, res) => {
+    const { pix } = req.body;
+    try {
+        pix.forEach(async(e) => {
+            await admin.firestore().collection('payments').add(e)
+        })
+
+        return console.log('sucess')
+    } catch (error) {
+        return console.log(error)   
+    }
+}); */
