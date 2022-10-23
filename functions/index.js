@@ -3,8 +3,8 @@ if(process.env.NODE_ENV !== 'production') {
 }
 const axios = require('axios')
 const express = require('express');
-const GNRequest = require('./src/apis/gerencianet');
 const bodyParser = require('body-parser');
+const GNRequest = require('./src/apis/gerencianet');
 
 const app = express();
 app.use(bodyParser.json());
@@ -16,8 +16,8 @@ const reqGNAlready = GNRequest({
 
 
 app.post('/', async(req, res) => {
-    const { fullname, expire, amount, cpf } = req.body;
     const reqGN = await reqGNAlready;
+    const { fullname, expire, amount, cpf } = req.body;
     const dataCob = {
         calendario: {
             expiracao: expire
