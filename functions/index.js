@@ -2,14 +2,11 @@ if(process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
 const axios = require('axios')
 const express = require('express');
 const GNRequest = require('./src/apis/gerencianet');
 const bodyParser = require('body-parser');
 
-admin.initializeApp();
 
 const app = express();
 app.use(bodyParser.json());
@@ -48,7 +45,7 @@ app.post('/webhook(/pix)?', async(req, res) => {
     console.log(req.body);
     const { pix } = req.body;
     try {
-        await axios.post('https://us-central1-readeasydice.cloudfunctions.net/api', {
+        await axios.post('https://us-central1-readeasydice.cloudfunctions.net/api/pix', {
             pix
         })
 
@@ -60,16 +57,3 @@ app.post('/webhook(/pix)?', async(req, res) => {
 })
 
 app.listen(8000, () => console.log('server running'))
-
-/* exports.api = functions.https.onRequest(async(req, res) => {
-    const { pix } = req.body;
-    try {
-        pix.forEach(async(e) => {
-            await admin.firestore().collection('payments').add(e)
-        })
-
-        return console.log('sucess')
-    } catch (error) {
-        return console.log(error)   
-    }
-}); */
