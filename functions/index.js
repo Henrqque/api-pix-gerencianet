@@ -34,7 +34,7 @@ app.get('/', async(req, res) => {
     res.send(qrcodeResponse.data)
 })
 
-app.get('/webhook(/pix)?', (req, res) => {
+app.post('/webhook(/pix)?', (req, res) => {
     console.log(req.body);
     res.send(200)
 })
