@@ -16,6 +16,12 @@ const reqGNAlready = GNRequest({
 
 app.post('/', async(req, res) => {
     const reqGN = await reqGNAlready;
+    if(!reqGN) {
+        GNRequest({
+            clientID: process.env.GN_CLIENT_ID,
+            clientSecret: process.env.GN_CLIENT_SECRET
+        });
+    }
     const { fullname, expire, amount, cpf, user } = req.body;
     const dataCob = {
         calendario: {
