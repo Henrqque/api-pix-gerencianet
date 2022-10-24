@@ -11,17 +11,10 @@ app.use(bodyParser.json());
 
 
 app.post('/', async(req, res) => {
-    const reqGN = GNRequest({
+    const reqGN = await GNRequest({
         clientID: process.env.GN_CLIENT_ID,
         clientSecret: process.env.GN_CLIENT_SECRET
     });
-    
-    if(!reqGN) {
-        GNRequest({
-            clientID: process.env.GN_CLIENT_ID,
-            clientSecret: process.env.GN_CLIENT_SECRET
-        });
-    }
     const { fullname, expire, amount, cpf, user } = req.body;
     const dataCob = {
         calendario: {
