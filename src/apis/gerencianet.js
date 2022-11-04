@@ -1,7 +1,8 @@
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
+const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
+const https = require("https");
+const { addHours, isAfter } = require("date-fns");
 
 const cert = fs.readFileSync(
   path.resolve(__dirname, `../../certs/${process.env.GN_CERT}`)
@@ -9,41 +10,55 @@ const cert = fs.readFileSync(
 
 const agent = new https.Agent({
   pfx: cert,
-  passphrase: ''
+  passphrase: "",
 });
 
 const authenticate = ({ clientID, clientSecret }) => {
-  const credentials = Buffer.from(
-    `${clientID}:${clientSecret}`
-  ).toString('base64');
+  const credentials = Buffer.from(`${clientID}:${clientSecret}`).toString(
+    "base64"
+  );
 
   return axios({
-    method: 'POST',
+    method: "POST",
     url: `${process.env.GN_ENDPOINT}/oauth/token`,
     headers: {
       Authorization: `Basic ${credentials}`,
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
     httpsAgent: agent,
     data: {
-      grant_type: 'client_credentials'
-    }
+      grant_type: "client_credentials",
+    },
   });
 };
 
+async function getToken(credentials) {
+  const authResponse = await authenticate(credentials);
+  const authData = Object.create(null);
+  const createdAt = Date.now();
+  authData.accessToken = authResponse.data?.access_token;
+  authData.createdAt = createdAt;
+  console.log(authData);
+  return authData;
+}
 
 const GNRequest = async (credentials) => {
-  const authResponse = await authenticate(credentials);
-  const accessToken = authResponse.data?.access_token;
+  const { accessToken, createdAt } = await getToken(credentials);
+
+  const compareDate = addHours(createdAt, 1);
+
+  if (isAfter(Date.now(), compareDate)) {
+    return getToken(credentials);
+  }
 
   return axios.create({
     baseURL: process.env.GN_ENDPOINT,
     httpsAgent: agent,
     headers: {
       Authorization: `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
-    }
+      "Content-Type": "application/json",
+    },
   });
-}
+};
 
 module.exports = GNRequest;
